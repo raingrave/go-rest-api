@@ -86,5 +86,10 @@ func ListUsers(c *gin.Context) {
 		return
 	}
 
+	if users == nil {
+		c.JSON(http.StatusOK, []models.User{})
+		return
+	}
+
 	c.JSON(http.StatusOK, users)
 }
