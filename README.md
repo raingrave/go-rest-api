@@ -48,7 +48,7 @@ Siga estas instruções para obter uma cópia do projeto e executá-lo em sua m�
     Conecte-se ao banco de dados PostgreSQL (rodando em `localhost:5432`) e execute o seguinte comando SQL para criar a tabela `users`.
     ```sql
     CREATE TABLE users (
-        id SERIAL PRIMARY KEY,
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
