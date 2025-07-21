@@ -13,7 +13,7 @@ services:
       - DB_PORT=5432
       - DB_SSLMODE=disable
       - JWT_SECRET_KEY=your-super-secret-key
-      - JWT_EXPIRATION_HOURS=720
+      - JWT_EXPIRATION_HOURS=1
     depends_on:
       - db
     restart: always
