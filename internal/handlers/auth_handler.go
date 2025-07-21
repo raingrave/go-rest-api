@@ -34,9 +34,10 @@ func Login(c *gin.Context) {
 	}
 
 	// Create token
+	expirationHours := configs.EnvJWTExpirationHours()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
-		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(), // Token expires in 30 days
+		"exp": time.Now().Add(time.Hour * time.Duration(expirationHours)).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret

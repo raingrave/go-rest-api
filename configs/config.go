@@ -3,6 +3,7 @@ package configs
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func EnvDBConnString() string {
@@ -18,4 +19,12 @@ func EnvDBConnString() string {
 
 func EnvJWTSecretKey() string {
 	return os.Getenv("JWT_SECRET_KEY")
+}
+
+func EnvJWTExpirationHours() int {
+	hours, err := strconv.Atoi(os.Getenv("JWT_EXPIRATION_HOURS"))
+	if err != nil {
+		return 720 // Default to 30 days (720 hours)
+	}
+	return hours
 }
