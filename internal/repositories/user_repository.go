@@ -6,7 +6,7 @@ import (
 )
 
 func CreateUser(user models.User) (int64, error) {
-	query := `INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id`
+	query := `INSERT INTO users (name, email, created_at) VALUES ($1, $2, NOW()) RETURNING id`
 	var id int64
 	err := internal.DB.QueryRow(query, user.Name, user.Email).Scan(&id)
 	if err != nil {
@@ -17,7 +17,7 @@ func CreateUser(user models.User) (int64, error) {
 
 func GetUser(id int64) (models.User, error) {
 	var user models.User
-	query := `SELECT id, name, email FROM users WHERE id = $1`
+	query := `SELECT id, name, email, created_at FROM users WHERE id = $1`
 	err := internal.DB.Get(&user, query, id)
 	return user, err
 }
@@ -36,7 +36,7 @@ func DeleteUser(id int64) error {
 
 func ListUsers() ([]models.User, error) {
 	var users []models.User
-	query := `SELECT id, name, email FROM users`
+	query := `SELECT id, name, email, created_at FROM users`
 	err := internal.DB.Select(&users, query)
 	return users, err
 }
