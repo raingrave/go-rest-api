@@ -6,9 +6,9 @@ import (
 )
 
 func CreateUser(user models.User) (int64, error) {
-	query := `INSERT INTO users (name, email, created_at) VALUES ($1, $2, NOW()) RETURNING id`
+	query := `INSERT INTO users (name, email, password, created_at) VALUES ($1, $2, $3, NOW()) RETURNING id`
 	var id int64
-	err := internal.DB.QueryRow(query, user.Name, user.Email).Scan(&id)
+	err := internal.DB.QueryRow(query, user.Name, user.Email, user.Password).Scan(&id)
 	if err != nil {
 		return 0, err
 	}

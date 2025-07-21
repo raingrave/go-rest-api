@@ -7,24 +7,41 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/raingrave/apirest/internal/models"
 	"github.com/raingrave/apirest/internal/repositories"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateUser(c *gin.Context) {
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var req struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	id, err := repositories.CreateUser(user)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return
+	}
 
+	user := models.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: string(hashedPassword),
+	}
+
+	id, err := repositories.CreateUser(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	user.ID = id
-	c.JSON(http.StatusCreated, user)
+	c.JSON(http.StatusCreated, gin.H{"id": user.ID, "name": user.Name, "email": user.Email})
 }
 
 func GetUser(c *gin.Context) {
