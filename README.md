@@ -58,11 +58,11 @@ Siga estas instruções para obter uma cópia do projeto e executá-lo em sua m�
 
 ## Endpoints da API
 
-A URL base é `http://localhost:3000`.
+A URL base é `http://localhost:3000/api/v1`.
 
 | Método   | Endpoint      | Descrição                               | Autenticação | Corpo da Requisição (Exemplo)                     |
 | :------- | :------------ | :-------------------------------------- | :----------- | :------------------------------------------------ |
-| `GET`    | `/health`     | Verifica o status da API.               | Nenhuma      | `N/A`                                             |
+| `GET`    | `/health`     | Verifica o status da API (fora da versão).| Nenhuma      | `N/A`                                             |
 | `POST`   | `/users`      | Cria um novo usuário.                   | Nenhuma      | `{"name":"...", "email":"...", "password":"..."}` |
 | `POST`   | `/login`      | Autentica um usuário e retorna um token. | Nenhuma      | `{"email":"...", "password":"..."}`               |
 | `GET`    | `/users`      | Lista todos os usuários.                | **Bearer Token** | `N/A`                                             |
