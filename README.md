@@ -1,65 +1,80 @@
-# Go REST API with Gin and PostgreSQL
+# API REST com Go, Gin e PostgreSQL
 
-A simple yet robust RESTful API built with Go, the Gin framework, and PostgreSQL. This project is fully containerized using Docker and Docker Compose, providing a clean and reproducible development environment.
+Uma API RESTful simples e robusta construída com Go, o framework Gin e PostgreSQL. Este projeto é totalmente containerizado usando Docker e Docker Compose, proporcionando um ambiente de desenvolvimento limpo e reproduzível.
 
-## ✨ Features
+## ✨ Funcionalidades
 
-- **Health Check:** A `/health` endpoint to monitor the API's status.
-- **User Management:** Full CRUD (Create, Read, Update, Delete) functionality for users.
-- **Containerized:** Runs entirely within Docker containers for consistency and ease of deployment.
-- **Structured Layout:** Follows the standard Go project layout for better organization.
+- **Autenticação JWT:** Endpoints seguros com JSON Web Tokens.
+- **Gestão de Usuários:** Funcionalidade CRUD (Criar, Ler, Atualizar, Deletar) completa para usuários, com senhas criptografadas.
+- **Health Check:** Um endpoint `/health` para monitorar o status da API.
+- **Containerização:** Roda inteiramente em containers Docker para consistência e facilidade de implantação.
+- **Estrutura Organizada:** Segue o layout de projeto padrão do Go para uma melhor organização.
 
-## 🛠️ Technologies Used
+## 🛠️ Tecnologias Utilizadas
 
-- **Go:** The core programming language.
-- **Gin:** A high-performance HTTP web framework for Go.
-- **PostgreSQL:** A powerful, open-source object-relational database system.
-- **sqlx:** A library providing a set of extensions on top of `database/sql`.
-- **Docker & Docker Compose:** For containerizing and orchestrating the application and database services.
+- **Go:** Linguagem de programação principal.
+- **Gin:** Framework web HTTP de alta performance para Go.
+- **PostgreSQL:** Sistema de banco de dados objeto-relacional de código aberto.
+- **sqlx:** Biblioteca que estende o pacote `database/sql` padrão.
+- **golang-jwt:** Para geração e validação de tokens JWT.
+- **bcrypt:** Para hashing seguro de senhas.
+- **Docker & Docker Compose:** Para containerizar e orquestrar os serviços da aplicação e do banco de dados.
 
-## 🚀 Getting Started
+## 🚀 Começando
 
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+Siga estas instruções para obter uma cópia do projeto e executá-lo em sua máquina local para fins de desenvolvimento e teste.
 
-### Prerequisites
+### Pré-requisitos
 
-- [Go](https://go.dev/doc/install) (v1.24 or newer)
-- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
+- [Go](https://go.dev/doc/install) (v1.24 ou mais recente)
+- [Docker](https://docs.docker.com/get-docker/) e [Docker Compose](https://docs.docker.com/compose/install/)
 
-### Installation & Running
+### Instalação e Execução
 
-1.  **Clone the repository:**
+1.  **Clone o repositório:**
     ```sh
     git clone git@github.com:raingrave/go-rest-api.git
     cd go-rest-api
     ```
 
-2.  **Run the application with Docker Compose:**
-    This single command will build the API image, start the API and database containers, and connect them.
+2.  **Execute a aplicação com Docker Compose:**
+    Este único comando irá construir a imagem da API, iniciar os containers da API e do banco de dados, e conectá-los.
     ```sh
     docker compose up --build -d
     ```
-    The API will be available at `http://localhost:3000`.
+    A API estará disponível em `http://localhost:3000`.
 
-3.  **Set up the database:**
-    Connect to the PostgreSQL database (running on `localhost:5432`) and execute the following SQL command to create the `users` table.
+3.  **Configure o banco de dados:**
+    Conecte-se ao banco de dados PostgreSQL (rodando em `localhost:5432`) e execute o seguinte comando SQL para criar a tabela `users`.
     ```sql
     CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
     );
     ```
 
-## Endpoints API
+## Endpoints da API
 
-The base URL is `http://localhost:3000`.
+A URL base é `http://localhost:3000`.
 
-| Method   | Endpoint      | Description                  | Request Body Example                             |
-| :------- | :------------ | :--------------------------- | :----------------------------------------------- |
-| `GET`    | `/health`     | Checks the API status.       | `N/A`                                            |
-| `GET`    | `/users`      | Retrieves a list of all users. | `N/A`                                            |
-| `POST`   | `/users`      | Creates a new user.          | `{"name": "John Doe", "email": "john@doe.com"}`   |
-| `GET`    | `/users/{id}` | Retrieves a single user by ID. | `N/A`                                            |
-| `PUT`    | `/users/{id}` | Updates an existing user.    | `{"name": "Jane Doe", "email": "jane@doe.com"}`   |
-| `DELETE` | `/users/{id}` | Deletes a user by ID.        | `N/A`                                            |
+| Método   | Endpoint      | Descrição                               | Autenticação | Corpo da Requisição (Exemplo)                     |
+| :------- | :------------ | :-------------------------------------- | :----------- | :------------------------------------------------ |
+| `GET`    | `/health`     | Verifica o status da API.               | Nenhuma      | `N/A`                                             |
+| `POST`   | `/users`      | Cria um novo usuário.                   | Nenhuma      | `{"name":"...", "email":"...", "password":"..."}` |
+| `POST`   | `/login`      | Autentica um usuário e retorna um token. | Nenhuma      | `{"email":"...", "password":"..."}`               |
+| `GET`    | `/users`      | Lista todos os usuários.                | **Bearer Token** | `N/A`                                             |
+| `GET`    | `/users/{id}` | Busca um único usuário pelo ID.         | **Bearer Token** | `N/A`                                             |
+| `PUT`    | `/users/{id}` | Atualiza um usuário existente.          | **Bearer Token** | `{"name":"...", "email":"..."}`                   |
+| `DELETE` | `/users/{id}` | Deleta um usuário pelo ID.              | **Bearer Token** | `N/A`                                             |
+
+### Como se Autenticar
+
+1.  Crie um usuário via `POST /users`.
+2.  Faça login com as credenciais via `POST /login` para receber um token.
+3.  Para acessar os endpoints protegidos, inclua o cabeçalho `Authorization` em suas requisições:
+    ```
+    Authorization: Bearer <seu_token_jwt_aqui>
+    ```
