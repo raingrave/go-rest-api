@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/raingrave/apirest/internal"
 	"github.com/raingrave/apirest/internal/handlers"
+	"github.com/raingrave/apirest/internal/middleware"
 )
 
 func main() {
@@ -16,18 +17,20 @@ func main() {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
+	// Public routes
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
-
-	r.GET("/users", handlers.ListUsers)
 	r.POST("/users", handlers.CreateUser)
+	r.POST("/login", handlers.Login)
 
-	userRoutes := r.Group("/users")
+	// Protected routes
+	authRoutes := r.Group("/").Use(middleware.AuthMiddleware())
 	{
-		userRoutes.GET("/:id", handlers.GetUser)
-		userRoutes.PUT("/:id", handlers.UpdateUser)
-		userRoutes.DELETE("/:id", handlers.DeleteUser)
+		authRoutes.GET("/users", handlers.ListUsers)
+		authRoutes.GET("/users/:id", handlers.GetUser)
+		authRoutes.PUT("/users/:id", handlers.UpdateUser)
+		authRoutes.DELETE("/users/:id", handlers.DeleteUser)
 	}
 
 	r.Run(":3000")

@@ -40,3 +40,10 @@ func ListUsers() ([]models.User, error) {
 	err := internal.DB.Select(&users, query)
 	return users, err
 }
+
+func GetUserByEmail(email string) (models.User, error) {
+	var user models.User
+	query := `SELECT id, name, email, password, created_at FROM users WHERE email = $1`
+	err := internal.DB.Get(&user, query, email)
+	return user, err
+}

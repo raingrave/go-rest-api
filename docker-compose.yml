@@ -12,6 +12,7 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_SSLMODE=disable
+      - JWT_SECRET_KEY=your-super-secret-key
     depends_on:
       - db
     restart: always

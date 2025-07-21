@@ -15,3 +15,7 @@ func EnvDBConnString() string {
 		os.Getenv("DB_SSLMODE"),
 	)
 }
+
+func EnvJWTSecretKey() string {
+	return os.Getenv("JWT_SECRET_KEY")
+}
