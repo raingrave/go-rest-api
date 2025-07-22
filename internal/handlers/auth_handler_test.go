@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/raingrave/apirest/internal/models"
-	"github.com/raingrave/apirest/internal/repositories"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
 )
