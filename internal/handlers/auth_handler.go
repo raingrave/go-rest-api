@@ -33,6 +33,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	expirationMinutes := configs.EnvJWTExpirationMinutes()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Minute * time.Duration(expirationMinutes)).Unix(),
