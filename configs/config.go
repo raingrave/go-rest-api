@@ -24,7 +24,7 @@ func EnvJWTSecretKey() string {
 func EnvJWTExpirationMinutes() int {
 	minutes, err := strconv.Atoi(os.Getenv("JWT_EXPIRATION_MINUTES"))
 	if err != nil {
-		return 60 // Default to 60 minutes
+		return 60
 	}
 	return minutes
 }

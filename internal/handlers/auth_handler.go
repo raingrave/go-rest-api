@@ -33,14 +33,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Create token
-	expirationMinutes := configs.EnvJWTExpirationMinutes()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Minute * time.Duration(expirationMinutes)).Unix(),
 	})
 
-	// Sign and get the complete encoded token as a string using the secret
 	tokenString, err := token.SignedString([]byte(configs.EnvJWTSecretKey()))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token"})
