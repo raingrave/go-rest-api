@@ -23,7 +23,7 @@ func getAuthToken(t *testing.T) (string, models.User) {
 		Email:    "protected@example.com",
 		Password: string(hashedPassword),
 	}
-	id, err := repositories.CreateUser(user)
+	id, err := userRepo.CreateUser(user)
 	assert.NoError(t, err)
 	user.ID = id
 

@@ -9,31 +9,30 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/raingrave/apirest/configs"
-	"github.com/raingrave/apirest/internal/repositories"
+	"github.com/raingrave/apirest/internal/services"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Login(c *gin.Context) {
+type AuthHandler struct {
+	userService services.UserService
+}
+
+func NewAuthHandler(userService services.UserService) *AuthHandler {
+	return &AuthHandler{userService: userService}
+}
+
+func (h *AuthHandler) Login(c *gin.Context) {
 	var req struct {
 		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		var ve validator.ValidationErrors
-		if errors.As(err, &ve) {
-			out := make(map[string]string)
-			for _, fe := range ve {
-				out[fe.Field()] = getErrorMsg(fe)
-			}
-			c.JSON(http.StatusBadRequest, gin.H{"errors": out})
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
-		}
+		handleValidationError(c, err)
 		return
 	}
 
-	user, err := repositories.GetUserByEmail(req.Email)
+	user, err := h.userService.GetUserByEmail(req.Email)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return

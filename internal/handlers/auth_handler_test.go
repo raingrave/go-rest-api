@@ -24,7 +24,7 @@ func TestLogin(t *testing.T) {
 		Email:    "test@example.com",
 		Password: string(hashedPassword),
 	}
-	_, err := repositories.CreateUser(user)
+	_, err := userRepo.CreateUser(user)
 	assert.NoError(t, err)
 
 	t.Run("Successful Login", func(t *testing.T) {

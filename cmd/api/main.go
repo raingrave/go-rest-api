@@ -12,12 +12,13 @@ import (
 	"github.com/raingrave/apirest/internal"
 	"github.com/raingrave/apirest/internal/handlers"
 	"github.com/raingrave/apirest/internal/middleware"
+	"github.com/raingrave/apirest/internal/repositories"
+	"github.com/raingrave/apirest/internal/services"
 )
 
 func main() {
 	internal.ConnectDB()
 
-	// Run database migrations
 	m, err := migrate.New(
 		"file://internal/database/migrations",
 		configs.EnvDatabaseURL(),
@@ -30,6 +31,12 @@ func main() {
 	}
 	log.Println("Database migrations ran successfully")
 
+	// Dependency Injection
+	userRepo := repositories.NewUserRepository()
+	userService := services.NewUserService(userRepo)
+	userHandler := handlers.NewUserHandler(userService)
+	authHandler := handlers.NewAuthHandler(userService)
+
 	r := gin.New()
 	r.RedirectTrailingSlash = false
 	r.Use(gin.Logger())
@@ -41,15 +48,15 @@ func main() {
 
 	v1 := r.Group("/api/v1")
 	{
-		v1.POST("/users", handlers.CreateUser)
-		v1.POST("/login", handlers.Login)
+		v1.POST("/users", userHandler.CreateUser)
+		v1.POST("/login", authHandler.Login)
 
 		authRoutes := v1.Group("/").Use(middleware.AuthMiddleware())
 		{
-			authRoutes.GET("/users", handlers.ListUsers)
-			authRoutes.GET("/users/:id", handlers.GetUser)
-			authRoutes.PUT("/users/:id", handlers.UpdateUser)
-			authRoutes.DELETE("/users/:id", handlers.DeleteUser)
+			authRoutes.GET("/users", userHandler.ListUsers)
+			authRoutes.GET("/users/:id", userHandler.GetUser)
+			authRoutes.PUT("/users/:id", userHandler.UpdateUser)
+			authRoutes.DELETE("/users/:id", userHandler.DeleteUser)
 		}
 	}
 
