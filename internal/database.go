@@ -12,7 +12,7 @@ var DB *sqlx.DB
 
 func ConnectDB() {
 	var err error
-	DB, err = sqlx.Connect("postgres", configs.EnvDBConnString())
+	DB, err = sqlx.Connect("postgres", configs.EnvDatabaseURL())
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}

@@ -20,7 +20,7 @@ func main() {
 	// Run database migrations
 	m, err := migrate.New(
 		"file://internal/database/migrations",
-		configs.EnvDBConnString(),
+		configs.EnvDatabaseURL(),
 	)
 	if err != nil {
 		log.Fatalf("could not create migrate instance: %v", err)
