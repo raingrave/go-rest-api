@@ -70,7 +70,7 @@ A URL base é `http://localhost:3000/api/v1`.
 | Método   | Endpoint      | Descrição                               | Autenticação | Corpo da Requisição (Exemplo)                     |
 | :------- | :------------ | :-------------------------------------- | :----------- | :------------------------------------------------ |
 | `GET`    | `/health`     | Verifica o status da API (fora da versão).| Nenhuma      | `N/A`                                             |
-| `POST`   | `/users`      | Cria um novo usuário.                   | Nenhuma      | `{"name":"...", "email":"...", "password":"..."}` |
+| `POST`   | `/users`      | Cria um novo usuário. Validações: `name` (obrigatório), `email` (obrigatório, formato de email), `password` (obrigatório, min 8 caracteres). | Nenhuma      | `{"name":"...", "email":"...", "password":"..."}` |
 | `POST`   | `/login`      | Autentica um usuário e retorna um token. | Nenhuma      | `{"email":"...", "password":"..."}`               |
 | `GET`    | `/users`      | Lista todos os usuários.                | **Bearer Token** | `N/A`                                             |
 | `GET`    | `/users/{id}` | Busca um único usuário pelo ID.         | **Bearer Token** | `N/A`                                             |

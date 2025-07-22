@@ -1,24 +1,49 @@
 package handlers
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/raingrave/apirest/internal/models"
 	"github.com/raingrave/apirest/internal/repositories"
 	"golang.org/x/crypto/bcrypt"
 )
 
+// getErrorMsg formata uma mensagem de erro amigável para uma falha de validação.
+func getErrorMsg(fe validator.FieldError) string {
+	switch fe.Tag() {
+	case "required":
+		return "This field is required"
+	case "email":
+		return "Invalid email format"
+	case "min":
+		return fmt.Sprintf("This field must be at least %s characters long", fe.Param())
+	}
+	return "Unknown error"
+}
+
 func CreateUser(c *gin.Context) {
 	var req struct {
-		Name     string `json:"name"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Name     string `json:"name" binding:"required"`
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required,min=8"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		var ve validator.ValidationErrors
+		if errors.As(err, &ve) {
+			out := make(map[string]string)
+			for _, fe := range ve {
+				out[fe.Field()] = getErrorMsg(fe)
+			}
+			c.JSON(http.StatusBadRequest, gin.H{"errors": out})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		}
 		return
 	}
 
