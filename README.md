@@ -99,3 +99,85 @@ Ao criar ou atualizar recursos, se houver um erro de validação nos dados envia
     }
 }
 ```
+
+## 🏛️ Arquitetura e Fluxo de Dados
+
+Os diagramas de sequência abaixo ilustram os principais fluxos da aplicação.
+
+### 1. Criação de Usuário
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Gin Router
+    participant User Handler
+    participant Bcrypt
+    participant User Repository
+    participant PostgreSQL DB
+
+    Client->>Gin Router: POST /api/v1/users (com nome, email, senha)
+    Gin Router->>User Handler: Chama CreateUser(c)
+    User Handler->>User Handler: Valida os dados de entrada (nome, email, senha)
+    User Handler->>Bcrypt: GenerateFromPassword(senha em texto plano)
+    Bcrypt-->>User Handler: Retorna senha com hash
+    User Handler->>User Repository: CreateUser(usuário com senha hasheada)
+    User Repository->>PostgreSQL DB: INSERT INTO users (...) VALUES (...)
+    PostgreSQL DB-->>User Repository: Retorna o novo UUID do usuário
+    User Repository-->>User Handler: Retorna o UUID
+    User Handler-->>Gin Router: Resposta 201 Created (com dados do usuário, sem senha)
+    Gin Router-->>Client: Resposta 201 Created
+```
+
+### 2. Autenticação (Login)
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Gin Router
+    participant Auth Handler
+    participant User Repository
+    participant PostgreSQL DB
+    participant Bcrypt
+    participant JWT Library
+
+    Client->>Gin Router: POST /api/v1/login (com email e senha)
+    Gin Router->>Auth Handler: Chama Login(c)
+    Auth Handler->>Auth Handler: Valida os dados de entrada (email, senha)
+    Auth Handler->>User Repository: GetUserByEmail(email)
+    User Repository->>PostgreSQL DB: SELECT * FROM users WHERE email = ...
+    PostgreSQL DB-->>User Repository: Retorna dados do usuário (incluindo senha com hash)
+    User Repository-->>Auth Handler: Retorna o objeto User
+    Auth Handler->>Bcrypt: CompareHashAndPassword(hash do DB, senha da requisição)
+    Bcrypt-->>Auth Handler: Confirma que a senha é válida
+    Auth Handler->>JWT Library: Gera o token com ID do usuário e tempo de expiração
+    JWT Library-->>Auth Handler: Retorna o token assinado (string)
+    Auth Handler-->>Gin Router: Resposta 200 OK (com o token)
+    Gin Router-->>Client: Resposta 200 OK
+```
+
+### 3. Acesso a Recurso Protegido
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Gin Router
+    participant Auth Middleware
+    participant JWT Library
+    participant User Handler
+    participant User Repository
+    participant PostgreSQL DB
+
+    Client->>Gin Router: GET /api/v1/users (com Header "Authorization: Bearer <token>")
+    Gin Router->>Auth Middleware: Executa o middleware de autenticação
+    Auth Middleware->>Auth Middleware: Extrai o token do cabeçalho
+    Auth Middleware->>JWT Library: ParseAndValidate(token)
+    JWT Library-->>Auth Middleware: Retorna que o token é válido (assinatura e expiração OK)
+    Auth Middleware->>Gin Router: Chama c.Next() para continuar
+    Gin Router->>User Handler: Chama ListUsers(c)
+    User Handler->>User Repository: ListUsers()
+    User Repository->>PostgreSQL DB: SELECT * FROM users
+    PostgreSQL DB-->>User Repository: Retorna a lista de usuários
+    User Repository-->>User Handler: Retorna a lista
+    User Handler-->>Gin Router: Resposta 200 OK (com a lista de usuários)
+    Gin Router-->>Client: Resposta 200 OK
+```
