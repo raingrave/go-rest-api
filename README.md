@@ -45,23 +45,12 @@ Siga estas instruções para obter uma cópia do projeto e executá-lo em sua m�
     *Você pode ajustar os valores no arquivo `.env` se necessário (por exemplo, para usar uma chave JWT diferente).*
 
 3.  **Execute a aplicação com Docker Compose:**
-    Este comando irá ler as variáveis do seu arquivo `.env`, construir a imagem da API, iniciar os containers e conectá-los.
+    Este comando irá ler as variáveis do seu arquivo `.env`, construir a imagem da API, iniciar os containers e conectá-los. Ao iniciar, a aplicação irá rodar as migrações do banco de dados automaticamente.
     ```sh
     docker compose up --build -d
     ```
     A API estará disponível em `http://localhost:3000`.
 
-4.  **Configure o banco de dados:**
-    Conecte-se ao banco de dados PostgreSQL (rodando em `localhost:5432`) e execute o seguinte comando SQL para criar a tabela `users`.
-    ```sql
-    CREATE TABLE users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
-    ```
 
 ## Endpoints da API
 

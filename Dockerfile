@@ -10,6 +10,9 @@ RUN go mod download
 
 COPY . .
 
+# Copy migrations
+COPY internal/database/migrations ./internal/database/migrations
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/main ./cmd/api
 
 # Final stage

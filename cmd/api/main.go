@@ -1,9 +1,14 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/raingrave/apirest/configs"
 	"github.com/raingrave/apirest/internal"
 	"github.com/raingrave/apirest/internal/handlers"
 	"github.com/raingrave/apirest/internal/middleware"
@@ -11,6 +16,19 @@ import (
 
 func main() {
 	internal.ConnectDB()
+
+	// Run database migrations
+	m, err := migrate.New(
+		"file://internal/database/migrations",
+		configs.EnvDBConnString(),
+	)
+	if err != nil {
+		log.Fatalf("could not create migrate instance: %v", err)
+	}
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("could not run migrations: %v", err)
+	}
+	log.Println("Database migrations ran successfully")
 
 	r := gin.New()
 	r.RedirectTrailingSlash = false
