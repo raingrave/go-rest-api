@@ -85,3 +85,17 @@ A URL base é `http://localhost:3000/api/v1`.
     ```
     Authorization: Bearer <seu_token_jwt_aqui>
     ```
+
+### Erros de Validação
+
+Ao criar ou atualizar recursos, se houver um erro de validação nos dados enviados, a API retornará uma resposta `400 Bad Request` com um corpo JSON detalhando os campos problemáticos.
+
+**Exemplo de Resposta de Erro:**
+```json
+{
+    "errors": {
+        "Email": "Invalid email format",
+        "Password": "This field must be at least 8 characters long"
+    }
+}
+```
