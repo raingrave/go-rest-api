@@ -2,8 +2,11 @@ package configs
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 func EnvDBConnString() string {
@@ -27,4 +30,15 @@ func EnvJWTExpirationMinutes() int {
 		return 60
 	}
 	return minutes
+}
+
+// LoadEnvForTests finds and loads the .env.test file.
+func LoadEnvForTests() {
+	err := godotenv.Load("../../.env.test") // Adjust path as needed
+	if err != nil {
+		// Try loading from the root, in case tests are run from there
+		if err = godotenv.Load(".env.test"); err != nil {
+			log.Fatalf("Error loading .env.test file for tests")
+		}
+	}
 }
