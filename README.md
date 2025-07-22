@@ -80,7 +80,7 @@ A URL base é `http://localhost:3000/api/v1`.
 ### Como se Autenticar
 
 1.  Crie um usuário via `POST /users`.
-2.  Faça login com as credenciais via `POST /login` para receber um token. O tempo de expiração padrão do token é de 1 hora, mas pode ser configurado através da variável de ambiente `JWT_EXPIRATION_HOURS`.
+2.  Faça login com as credenciais via `POST /login` para receber um token. O tempo de expiração padrão do token é de 60 minutos, mas pode ser configurado através da variável de ambiente `JWT_EXPIRATION_MINUTES`.
 3.  Para acessar os endpoints protegidos, inclua o cabeçalho `Authorization` em suas requisições:
     ```
     Authorization: Bearer <seu_token_jwt_aqui>

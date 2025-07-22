@@ -34,10 +34,10 @@ func Login(c *gin.Context) {
 	}
 
 	// Create token
-	expirationHours := configs.EnvJWTExpirationHours()
+	expirationMinutes := configs.EnvJWTExpirationMinutes()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
-		"exp": time.Now().Add(time.Hour * time.Duration(expirationHours)).Unix(),
+		"exp": time.Now().Add(time.Minute * time.Duration(expirationMinutes)).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret

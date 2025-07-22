@@ -13,7 +13,7 @@ services:
       - DB_PORT=${DB_PORT}
       - DB_SSLMODE=${DB_SSLMODE}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - JWT_EXPIRATION_HOURS=${JWT_EXPIRATION_HOURS}
+      - JWT_EXPIRATION_MINUTES=${JWT_EXPIRATION_MINUTES}
     depends_on:
       - db
     restart: always

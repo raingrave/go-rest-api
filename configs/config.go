@@ -21,10 +21,10 @@ func EnvJWTSecretKey() string {
 	return os.Getenv("JWT_SECRET_KEY")
 }
 
-func EnvJWTExpirationHours() int {
-	hours, err := strconv.Atoi(os.Getenv("JWT_EXPIRATION_HOURS"))
+func EnvJWTExpirationMinutes() int {
+	minutes, err := strconv.Atoi(os.Getenv("JWT_EXPIRATION_MINUTES"))
 	if err != nil {
-		return 1 // Default to 1 hour
+		return 60 // Default to 60 minutes
 	}
-	return hours
+	return minutes
 }
