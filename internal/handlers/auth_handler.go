@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/raingrave/apirest/configs"
 	"github.com/raingrave/apirest/internal/repositories"
@@ -13,12 +15,21 @@ import (
 
 func Login(c *gin.Context) {
 	var req struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		var ve validator.ValidationErrors
+		if errors.As(err, &ve) {
+			out := make(map[string]string)
+			for _, fe := range ve {
+				out[fe.Field()] = getErrorMsg(fe)
+			}
+			c.JSON(http.StatusBadRequest, gin.H{"errors": out})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		}
 		return
 	}
 
