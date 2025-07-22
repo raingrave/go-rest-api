@@ -24,3 +24,7 @@ main
 # Environment variables
 .env
 .env.test
+
+# Air build artifacts
+tmp
+air.log

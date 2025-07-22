@@ -26,6 +26,8 @@ Uma API RESTful simples e robusta construída com Go, o framework Gin e PostgreS
 
 ## 🚀 Começando
 
+Este projeto usa **Air** para live-reloading, o que significa que a aplicação reinicia automaticamente sempre que você salva uma alteração em um arquivo `.go`.
+
 Siga estas instruções para obter uma cópia do projeto e executá-lo em sua máquina local.
 
 ### Pré-requisitos
