@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/raingrave/apirest/internal"
+	"github.com/raingrave/apirest/internal/middleware"
 )
 
 var router *gin.Engine
@@ -31,9 +32,19 @@ func TestMain(m *testing.M) {
 
 func setupRouter() *gin.Engine {
 	r := gin.New()
-	r.POST("/api/v1/users", CreateUser)
-	r.POST("/api/v1/login", Login)
-	// ... add other routes as you write tests for them
+	v1 := r.Group("/api/v1")
+	{
+		v1.POST("/users", CreateUser)
+		v1.POST("/login", Login)
+
+		authRoutes := v1.Group("/").Use(middleware.AuthMiddleware())
+		{
+			authRoutes.GET("/users", ListUsers)
+			authRoutes.GET("/users/:id", GetUser)
+			authRoutes.PUT("/users/:id", UpdateUser)
+			authRoutes.DELETE("/users/:id", DeleteUser)
+		}
+	}
 	return r
 }
 
