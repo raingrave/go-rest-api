@@ -5,24 +5,28 @@ Uma API RESTful simples e robusta construída com Go, o framework Gin e PostgreS
 ## ✨ Funcionalidades
 
 - **Autenticação JWT:** Endpoints seguros com JSON Web Tokens.
-- **Gestão de Usuários:** Funcionalidade CRUD (Criar, Ler, Atualizar, Deletar) completa para usuários, com senhas criptografadas.
+- **Gestão de Usuários:** Funcionalidade CRUD completa para usuários, com senhas criptografadas e validação de entrada.
+- **Migrações Automáticas de BD:** O schema do banco de dados é gerenciado e aplicado automaticamente ao iniciar a aplicação.
 - **Health Check:** Um endpoint `/health` para monitorar o status da API.
+- **Suíte de Testes:** Cobertura de testes para garantir a confiabilidade dos handlers e middlewares.
 - **Containerização:** Roda inteiramente em containers Docker para consistência e facilidade de implantação.
-- **Estrutura Organizada:** Segue o layout de projeto padrão do Go para uma melhor organização.
+- **Estrutura Organizada:** Segue o layout de projeto padrão do Go.
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **Go:** Linguagem de programação principal.
-- **Gin:** Framework web HTTP de alta performance para Go.
-- **PostgreSQL:** Sistema de banco de dados objeto-relacional de código aberto.
-- **sqlx:** Biblioteca que estende o pacote `database/sql` padrão.
+- **Gin:** Framework web HTTP de alta performance.
+- **PostgreSQL:** Sistema de banco de dados objeto-relacional.
+- **sqlx:** Extensões para o pacote `database/sql` padrão.
 - **golang-jwt:** Para geração e validação de tokens JWT.
 - **bcrypt:** Para hashing seguro de senhas.
-- **Docker & Docker Compose:** Para containerizar e orquestrar os serviços da aplicação e do banco de dados.
+- **golang-migrate:** Para o gerenciamento de migrações do banco de dados.
+- **testify:** Biblioteca de asserções para testes.
+- **Docker & Docker Compose:** Para containerizar e orquestrar os serviços.
 
 ## 🚀 Começando
 
-Siga estas instruções para obter uma cópia do projeto e executá-lo em sua máquina local para fins de desenvolvimento e teste.
+Siga estas instruções para obter uma cópia do projeto e executá-lo em sua máquina local.
 
 ### Pré-requisitos
 
@@ -38,19 +42,32 @@ Siga estas instruções para obter uma cópia do projeto e executá-lo em sua m�
     ```
 
 2.  **Crie o arquivo de ambiente:**
-    Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`. O arquivo `.env` é onde suas variáveis de ambiente locais serão armazenadas e ele não é enviado para o Git.
+    Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`.
     ```sh
     cp .env.example .env
     ```
-    *Você pode ajustar os valores no arquivo `.env` se necessário (por exemplo, para usar uma chave JWT diferente).*
+    *Você pode ajustar os valores no arquivo `.env` se necessário.*
 
 3.  **Execute a aplicação com Docker Compose:**
-    Este comando irá ler as variáveis do seu arquivo `.env`, construir a imagem da API, iniciar os containers e conectá-los. Ao iniciar, a aplicação irá rodar as migrações do banco de dados automaticamente.
+    Este comando irá construir a imagem da API, iniciar os containers e conectá-los. Ao iniciar, a aplicação irá rodar as **migrações do banco de dados automaticamente**, configurando o schema necessário.
     ```sh
     docker compose up --build -d
     ```
     A API estará disponível em `http://localhost:3000`.
 
+## 🧪 Executando os Testes
+
+Para rodar a suíte de testes completa, certifique-se de que os containers do Docker estejam em execução (pois os testes precisam de uma conexão com o banco de dados) e execute o seguinte comando na raiz do projeto:
+
+```sh
+go test ./...
+```
+
+Para ver a cobertura de testes em detalhe:
+
+```sh
+go test -coverprofile=coverage.out ./... && go tool cover -func=coverage.out
+```
 
 ## Endpoints da API
 
