@@ -20,3 +20,6 @@ go.work
 
 # Compiled binary
 main
+
+# Environment variables
+.env
