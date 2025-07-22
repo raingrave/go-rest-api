@@ -21,6 +21,7 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=build /app/main .
+COPY --from=build /app/internal/database/migrations ./internal/database/migrations
 
 EXPOSE 3000
 
