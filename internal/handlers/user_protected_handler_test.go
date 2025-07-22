@@ -8,7 +8,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/raingrave/apirest/internal/models"
 	"github.com/raingrave/apirest/internal/repositories"
 	"github.com/stretchr/testify/assert"
