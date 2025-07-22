@@ -32,11 +32,9 @@ func EnvJWTExpirationMinutes() int {
 	return minutes
 }
 
-// LoadEnvForTests finds and loads the .env.test file.
 func LoadEnvForTests() {
-	err := godotenv.Load("../../.env.test") // Adjust path as needed
+	err := godotenv.Load("../../.env.test")
 	if err != nil {
-		// Try loading from the root, in case tests are run from there
 		if err = godotenv.Load(".env.test"); err != nil {
 			log.Fatalf("Error loading .env.test file for tests")
 		}

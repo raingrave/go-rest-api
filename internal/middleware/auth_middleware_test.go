@@ -32,9 +32,6 @@ func generateTestToken(userID uuid.UUID, secret string, expiration time.Duration
 }
 
 func TestAuthMiddleware(t *testing.T) {
-	// Load .env for JWT_SECRET_KEY
-	// Note: This assumes tests are run from the root directory.
-	// A more robust solution might be needed if run from different locations.
 	configs.LoadEnvForTests()
 	secret := configs.EnvJWTSecretKey()
 	router := setupTestRouterWithMiddleware()
@@ -66,7 +63,7 @@ func TestAuthMiddleware(t *testing.T) {
 	})
 
 	t.Run("Failure - Expired Token", func(t *testing.T) {
-		token, _ := generateTestToken(userID, secret, -time.Hour) // Expired 1 hour ago
+		token, _ := generateTestToken(userID, secret, -time.Hour)
 		req, _ := http.NewRequest("GET", "/test", nil)
 		req.Header.Set("Authorization", "Bearer "+token)
 		w := httptest.NewRecorder()

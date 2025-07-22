@@ -15,7 +15,6 @@ import (
 func TestLogin(t *testing.T) {
 	clearUserTable()
 
-	// 1. Setup: Create a user directly in the DB to test against
 	password := "password123"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	user := models.User{
@@ -27,7 +26,6 @@ func TestLogin(t *testing.T) {
 	assert.NoError(t, err)
 
 	t.Run("Successful Login", func(t *testing.T) {
-		// 2. Prepare Request
 		loginCredentials := map[string]string{
 			"email":    "test@example.com",
 			"password": "password123",
@@ -36,11 +34,9 @@ func TestLogin(t *testing.T) {
 		req, _ := http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(body))
 		req.Header.Set("Content-Type", "application/json")
 
-		// 3. Execute Request
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
-		// 4. Assert
 		assert.Equal(t, http.StatusOK, w.Code)
 
 		var response map[string]string

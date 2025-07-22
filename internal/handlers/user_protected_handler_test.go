@@ -13,7 +13,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Helper function to create a user, log them in, and return a valid JWT.
 func getAuthToken(t *testing.T) (string, models.User) {
 	password := "password123"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

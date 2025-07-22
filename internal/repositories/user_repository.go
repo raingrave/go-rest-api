@@ -7,7 +7,6 @@ import (
 	"github.com/raingrave/apirest/internal/models"
 )
 
-// UserRepository defines the interface for user data operations.
 type UserRepository interface {
 	CreateUser(user models.User) (uuid.UUID, error)
 	GetUser(id uuid.UUID) (models.User, error)
@@ -17,12 +16,10 @@ type UserRepository interface {
 	GetUserByEmail(email string) (models.User, error)
 }
 
-// userRepository is the concrete implementation for PostgreSQL.
 type userRepository struct {
 	db *sqlx.DB
 }
 
-// NewUserRepository creates a new instance of UserRepository.
 func NewUserRepository() UserRepository {
 	return &userRepository{db: internal.DB}
 }

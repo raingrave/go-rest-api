@@ -6,7 +6,6 @@ import (
 	"github.com/raingrave/apirest/internal/repositories"
 )
 
-// UserService defines the interface for user business logic.
 type UserService interface {
 	CreateUser(user models.User) (models.User, error)
 	GetUser(id uuid.UUID) (models.User, error)
@@ -16,12 +15,10 @@ type UserService interface {
 	GetUserByEmail(email string) (models.User, error)
 }
 
-// userService is the concrete implementation.
 type userService struct {
 	repo repositories.UserRepository
 }
 
-// NewUserService creates a new instance of UserService.
 func NewUserService(repo repositories.UserRepository) UserService {
 	return &userService{repo: repo}
 }
@@ -31,7 +28,6 @@ func (s *userService) CreateUser(user models.User) (models.User, error) {
 	if err != nil {
 		return models.User{}, err
 	}
-	// After creation, get the full user object to return it
 	return s.repo.GetUser(id)
 }
 
