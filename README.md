@@ -37,14 +37,21 @@ Siga estas instruções para obter uma cópia do projeto e executá-lo em sua m�
     cd go-rest-api
     ```
 
-2.  **Execute a aplicação com Docker Compose:**
-    Este único comando irá construir a imagem da API, iniciar os containers da API e do banco de dados, e conectá-los.
+2.  **Crie o arquivo de ambiente:**
+    Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`. O arquivo `.env` é onde suas variáveis de ambiente locais serão armazenadas e ele não é enviado para o Git.
+    ```sh
+    cp .env.example .env
+    ```
+    *Você pode ajustar os valores no arquivo `.env` se necessário (por exemplo, para usar uma chave JWT diferente).*
+
+3.  **Execute a aplicação com Docker Compose:**
+    Este comando irá ler as variáveis do seu arquivo `.env`, construir a imagem da API, iniciar os containers e conectá-los.
     ```sh
     docker compose up --build -d
     ```
     A API estará disponível em `http://localhost:3000`.
 
-3.  **Configure o banco de dados:**
+4.  **Configure o banco de dados:**
     Conecte-se ao banco de dados PostgreSQL (rodando em `localhost:5432`) e execute o seguinte comando SQL para criar a tabela `users`.
     ```sql
     CREATE TABLE users (
