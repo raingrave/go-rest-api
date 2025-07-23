@@ -8,6 +8,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/joho/godotenv"
 	"github.com/raingrave/apirest/configs"
 	"github.com/raingrave/apirest/internal"
 	"github.com/raingrave/apirest/internal/handlers"
@@ -17,6 +18,11 @@ import (
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	internal.ConnectDB()
 
 	m, err := migrate.New(
